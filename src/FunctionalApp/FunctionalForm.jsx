@@ -1,5 +1,11 @@
 import { ErrorMessage } from "../ErrorMessage";
 import { TextInput } from "./TextInput";
+import { 
+  firstNameValidation,
+  lastNameValidation,
+  isEmailValid
+} from "../utils/validations";
+
 import { useState } from 'react';
 
 const firstNameErrorMessage = "First name must be at least 2 characters long";
@@ -8,33 +14,34 @@ const emailErrorMessage = "Email is Invalid";
 const cityErrorMessage = "State is Invalid";
 const phoneNumberErrorMessage = "Invalid Phone Number";
 
-export const FunctionalForm = ( { handleData } ) => {
+export const FunctionalForm = () => {
   const [firstNameInput, setFirstNameInput] = useState('');
-  const [isInputValid, setInputValid] = useState(false);
+  const [lastNameInput, setLastNameInput ]=useState('');
+  const [emailInput ,setEmailInput]=useState('');
 
-  const isValid = (v) => {
-    if (v === '') {
-      alert('bad data input');
-      setInputValid(true);
-      console.log(isInputValid);
-    } else if (v.length < 2) {
-      alert('bad data input');
-      setInputValid(true);
-      console.log(isInputValid);
-    } else {
-      setInputValid(false);
-    }
-  }
-  
+  const [isFistNameValid, setFirstNameValid] = useState(false);
+  const [isLastNameValid, setLastNameValid] = useState(false);
+  // const [isEmailValid, setIsEmailValid] = useState(false);
   const reset = () => {
     setFirstNameInput('');
+    setLastNameInput('');
   }
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleData(firstNameInput);
-    isValid(firstNameInput);
-    reset();
+    
+    setFirstNameValid(firstNameValidation(firstNameInput));
+    setLastNameValid(lastNameValidation(lastNameInput));
+
+    if (isFistNameValid === true || isLastNameValid === true) {
+      alert('bad data input');
+    }
+
+    if (isFistNameValid === false && isLastNameValid === false) {
+      reset();
+    }
   }
+
   return (
     <form 
       onSubmit={handleSubmit}
@@ -44,6 +51,7 @@ export const FunctionalForm = ( { handleData } ) => {
       </u>
 
       {/* first name input */}
+
       <TextInput
         inputProps={{
           onChange:(e) => {
@@ -54,20 +62,34 @@ export const FunctionalForm = ( { handleData } ) => {
         }}
         labelText={"First Name"}
       />
-      <ErrorMessage message={firstNameErrorMessage}  show={isInputValid} />
+      <ErrorMessage message={firstNameErrorMessage}  show={isFistNameValid} />
         
       {/* last name input */}
-      <div className="input-wrap">
-        <label>{"Last Name"}:</label>
-        <input placeholder="Baggins" />
-      </div>
-      <ErrorMessage message={lastNameErrorMessage} show={true} />
+
+      <TextInput
+        inputProps={{
+          onChange:(e) => {
+            setLastNameInput(e.target.value);
+          },
+          value: lastNameInput,
+          placeholder:"Baggins",
+        }}
+        labelText={"Last Name"}
+      />
+      <ErrorMessage message={lastNameErrorMessage} show={isLastNameValid} />
 
       {/* Email Input */}
-      <div className="input-wrap">
-        <label>{"Email"}:</label>
-        <input placeholder="bilbo-baggins@adventurehobbits.net" />
-      </div>
+
+      <TextInput
+        inputProps={{
+          onChange : (e)=> {
+            setEmailInput(e.target.value);
+          },
+          value: emailInput,
+          placeholder:"bilbo-baggins@adventurehobbits.net",
+        }}
+        labelText={"Email"}
+      />
       <ErrorMessage message={emailErrorMessage} show={true} />
 
       {/* City Input */}

@@ -4,19 +4,19 @@ import { FunctionalForm } from "./FunctionalForm";
 
 export const FunctionalApp = () => {
   
-  
-
-  const handleData = (a) => {
-    console.log("hello");
-  }
+  const handleData = ((a) => {
+    console.log(a);
+  });
   return (
     <>
       <h2>Functional</h2>
-      <ProfileInformation userData={null} />
+      <ProfileInformation 
+        userData={null} 
+      />
       <FunctionalForm  
-      handleData={handleData}
+        handleData={handleData}
       // isValid={isValid}
-        />
+      />
     </>
   );
 };

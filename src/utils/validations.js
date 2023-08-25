@@ -3,3 +3,20 @@ export function isEmailValid(emailAddress) {
   const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   return !!emailAddress.match(regex);
 }
+
+export function firstNameValidation(fistName){
+  if (fistName.length < 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function lastNameValidation(lastName){
+  if (lastName.length < 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
