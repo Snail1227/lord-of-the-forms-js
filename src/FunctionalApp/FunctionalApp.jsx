@@ -1,12 +1,22 @@
 import { ProfileInformation } from "../ProfileInformation";
 import { FunctionalForm } from "./FunctionalForm";
+// import { useState } from 'react';
 
 export const FunctionalApp = () => {
+  
+  
+
+  const handleData = (a) => {
+    console.log("hello");
+  }
   return (
     <>
       <h2>Functional</h2>
       <ProfileInformation userData={null} />
-      <FunctionalForm />
+      <FunctionalForm  
+      handleData={handleData}
+      // isValid={isValid}
+        />
     </>
   );
 };
