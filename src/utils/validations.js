@@ -4,19 +4,8 @@ export function isEmailValid(emailAddress) {
   return !!emailAddress.match(regex);
 }
 
-export function firstNameValidation(fistName){
-  if (fistName.length < 2) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
-export function lastNameValidation(lastName){
-  if (lastName.length < 2) {
-    return true;
-  } else {
-    return false;
-  }
-}
+
+
+
 

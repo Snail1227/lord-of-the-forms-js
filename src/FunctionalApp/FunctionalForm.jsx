@@ -1,12 +1,14 @@
 import { ErrorMessage } from "../ErrorMessage";
 import { TextInput } from "./TextInput";
-import { 
-  firstNameValidation,
-  lastNameValidation,
-  isEmailValid
-} from "../utils/validations";
+import { allCities } from "../utils/all-cities";
+// import { 
+//   firstNameValidation,
+//   lastNameValidation,
+//   isEmailValid
+// } from "../utils/validations";
 
 import { useState } from 'react';
+
 
 const firstNameErrorMessage = "First name must be at least 2 characters long";
 const lastNameErrorMessage = "Last name must be at least 2 characters long";
@@ -14,32 +16,63 @@ const emailErrorMessage = "Email is Invalid";
 const cityErrorMessage = "State is Invalid";
 const phoneNumberErrorMessage = "Invalid Phone Number";
 
-export const FunctionalForm = () => {
+export const FunctionalForm = ( { handleData } ) => {
+
   const [firstNameInput, setFirstNameInput] = useState('');
-  const [lastNameInput, setLastNameInput ]=useState('');
-  const [emailInput ,setEmailInput]=useState('');
+  const [lastNameInput, setLastNameInput ] = useState('');
+  const [emailInput ,setEmailInput] = useState('');
+  const [cityInput ,setCityInput] = useState ('');
 
   const [isFistNameValid, setFirstNameValid] = useState(false);
   const [isLastNameValid, setLastNameValid] = useState(false);
-  // const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isCityValid, setCityValid] = useState(false);
+
   const reset = () => {
     setFirstNameInput('');
     setLastNameInput('');
+    setEmailInput('');
   }
+
+  // const badRequest = () => {  
+  //   if (isFistNameValid || isLastNameValid) {
+  //     alert('bad data input');
+  //   }
+  // }
+
+
+  // const firstNameValidation = (firstName) => {
+  //   if (firstName.length < 1) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  // const lastNameValidation = (lastName) => {
+  //   if (lastName.length < 1) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const data = new FormData(e.target);
+    const handleData = Object.fromEntries(data.entries())
+    console.log(handleData);
+    // const isFirstNameInvalid = firstNameValidation(firstNameInput);
+    // const isLastNameInvalid = lastNameValidation(lastNameInput);
     
-    setFirstNameValid(firstNameValidation(firstNameInput));
-    setLastNameValid(lastNameValidation(lastNameInput));
+    // setFirstNameValid(isFirstNameInvalid);
+    // setLastNameValid(isLastNameInvalid);
 
-    if (isFistNameValid === true || isLastNameValid === true) {
-      alert('bad data input');
-    }
-
-    if (isFistNameValid === false && isLastNameValid === false) {
-      reset();
-    }
+    
+    // badRequest();
+    reset();
+     
   }
 
   return (
@@ -57,6 +90,7 @@ export const FunctionalForm = () => {
           onChange:(e) => {
             setFirstNameInput(e.target.value);
           },
+          name: "First name",
           value: firstNameInput,
           placeholder: "Bilbo",
         }}
@@ -71,6 +105,7 @@ export const FunctionalForm = () => {
           onChange:(e) => {
             setLastNameInput(e.target.value);
           },
+          name: "Last name",
           value: lastNameInput,
           placeholder:"Baggins",
         }}
@@ -85,19 +120,33 @@ export const FunctionalForm = () => {
           onChange : (e)=> {
             setEmailInput(e.target.value);
           },
+          name:"Email",
           value: emailInput,
           placeholder:"bilbo-baggins@adventurehobbits.net",
         }}
         labelText={"Email"}
       />
-      <ErrorMessage message={emailErrorMessage} show={true} />
+      <ErrorMessage message={emailErrorMessage} show={isEmailValid} />
 
       {/* City Input */}
-      <div className="input-wrap">
-        <label>{"City"}:</label>
-        <input placeholder="Hobbiton" />
-      </div>
-      <ErrorMessage message={cityErrorMessage} show={true} />
+
+      <TextInput
+      inputProps = {{
+        onChange: (e) => {
+          setCityInput(e.target.value);
+        },
+        name:"City",
+        value: cityInput,
+        placeholder:'Hobbiton',
+      }}
+      labelText={"City"}
+      />
+      <datalist id="cities">
+                {allCities.map((city, index) => (
+                    <option key={index} value={city} />
+                ))}
+            </datalist>
+      <ErrorMessage message={cityErrorMessage} show={isCityValid} />
 
       <div className="input-wrap">
         <label htmlFor="phone">Phone:</label>
