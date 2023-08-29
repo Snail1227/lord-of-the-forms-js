@@ -1,11 +1,7 @@
 import { ErrorMessage } from "../ErrorMessage";
 import { TextInput } from "./TextInput";
 import { allCities } from "../utils/all-cities";
-// import { 
-//   firstNameValidation,
-//   lastNameValidation,
-//   isEmailValid
-// } from "../utils/validations";
+import { PhoneInput } from "./PhoneInput";
 
 import { useState } from 'react';
 
@@ -34,43 +30,13 @@ export const FunctionalForm = ( { handleData } ) => {
     setEmailInput('');
   }
 
-  // const badRequest = () => {  
-  //   if (isFistNameValid || isLastNameValid) {
-  //     alert('bad data input');
-  //   }
-  // }
-
-
-  // const firstNameValidation = (firstName) => {
-  //   if (firstName.length < 1) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  // const lastNameValidation = (lastName) => {
-  //   if (lastName.length < 1) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const data = new FormData(e.target);
     const handleData = Object.fromEntries(data.entries())
     console.log(handleData);
-    // const isFirstNameInvalid = firstNameValidation(firstNameInput);
-    // const isLastNameInvalid = lastNameValidation(lastNameInput);
-    
-    // setFirstNameValid(isFirstNameInvalid);
-    // setLastNameValid(isLastNameInvalid);
-
-    
-    // badRequest();
+   
     reset();
      
   }
@@ -148,18 +114,9 @@ export const FunctionalForm = ( { handleData } ) => {
             </datalist>
       <ErrorMessage message={cityErrorMessage} show={isCityValid} />
 
-      <div className="input-wrap">
-        <label htmlFor="phone">Phone:</label>
-        <div id="phone-input-wrap">
-          <input type="text" id="phone-input-1" placeholder="55" />
-          -
-          <input type="text" id="phone-input-2" placeholder="55" />
-          -
-          <input type="text" id="phone-input-3" placeholder="55" />
-          -
-          <input type="text" id="phone-input-4" placeholder="5" />
-        </div>
-      </div>
+      {/* Phone Input */}
+
+      <PhoneInput />
 
       <ErrorMessage message={phoneNumberErrorMessage} show={true} />
 
