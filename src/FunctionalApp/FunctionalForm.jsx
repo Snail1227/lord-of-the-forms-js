@@ -3,7 +3,7 @@ import { TextInput } from "./TextInput";
 import { allCities } from "../utils/all-cities";
 import { PhoneInput } from "./PhoneInput";
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 
 const firstNameErrorMessage = "First name must be at least 2 characters long";
@@ -14,15 +14,50 @@ const phoneNumberErrorMessage = "Invalid Phone Number";
 
 export const FunctionalForm = ( { handleData } ) => {
 
+  // const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]);
+  // const refs = [useRef(), useRef(), useRef(), useRef()];
+
+  // const ref0 = refs[0];
+  // const ref1 = refs[1];
+  // const ref2 = refs[2];
+  // const ref3 = refs[3];
+
   const [firstNameInput, setFirstNameInput] = useState('');
   const [lastNameInput, setLastNameInput ] = useState('');
-  const [emailInput ,setEmailInput] = useState('');
-  const [cityInput ,setCityInput] = useState ('');
+  const [emailInput, setEmailInput] = useState('');
+  const [cityInput, setCityInput] = useState ('');
+  const [phoneInput, setPhoneInput] = useState('');
 
   const [isFistNameValid, setFirstNameValid] = useState(false);
   const [isLastNameValid, setLastNameValid] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isCityValid, setCityValid] = useState(false);
+
+
+  // const createChangeHandler = (index) => (e) => {
+  //   const length = [2, 2, 2, 1];
+  //   const currentMaxLength = length[index];
+  //   const nextRef = refs[index + 1];
+  //   const prevRef = refs[index - 1];
+  //   const value = e.target.value;
+
+  //   const shouldGoToNextRef = currentMaxLength === value.length && nextRef !== undefined;
+  //   const shouldGoToPrevRef = value.length === 0 && prevRef !== undefined;
+
+  //   if (shouldGoToNextRef && nextRef.current) {
+  //       nextRef.current.focus();
+  //   }
+
+  //   if (shouldGoToPrevRef && prevRef.current) {
+  //       prevRef.current.focus();
+  //   }
+
+  //   const newState = phoneInputState.map((phoneInput, phoneInputIndex) => 
+  //       index === phoneInputIndex ? e.target.value.slice(0, currentMaxLength) : phoneInput
+  //   );
+
+  //   setPhoneInputState(newState); 
+  // }
 
   const reset = () => {
     setFirstNameInput('');
@@ -36,9 +71,9 @@ export const FunctionalForm = ( { handleData } ) => {
     const data = new FormData(e.target);
     const handleData = Object.fromEntries(data.entries())
     console.log(handleData);
+    console.log();
    
-    reset();
-     
+    reset();  
   }
 
   return (
@@ -115,10 +150,16 @@ export const FunctionalForm = ( { handleData } ) => {
       <ErrorMessage message={cityErrorMessage} show={isCityValid} />
 
       {/* Phone Input */}
-
-      <PhoneInput />
-
-      <ErrorMessage message={phoneNumberErrorMessage} show={true} />
+      <PhoneInput
+        inputProps={{
+          onChange: (e) => {
+            setPhoneInput(e.target.value);
+          },
+          name:"Phone"
+        }}
+        labelText={"Phone"}
+      />
+      <ErrorMessage message={phoneNumberErrorMessage} />
 
       <input type="submit" value="Submit" />
     </form>

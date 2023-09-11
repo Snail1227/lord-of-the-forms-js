@@ -4,9 +4,7 @@ import { FunctionalForm } from "./FunctionalForm";
 
 export const FunctionalApp = () => {
   
-  const handleData = ((a) => {
-    console.log(a);
-  });
+
   return (
     <>
       <h2>Functional</h2>
@@ -14,8 +12,6 @@ export const FunctionalApp = () => {
         userData={null} 
       />
       <FunctionalForm  
-        handleData={handleData}
-      // isValid={isValid}
       />
     </>
   );

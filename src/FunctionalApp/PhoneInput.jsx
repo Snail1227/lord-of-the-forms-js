@@ -1,8 +1,7 @@
 import { useState, useRef } from "react"
 
-export function PhoneInput() {
+export function PhoneInput( { labelText, inputProps } ) {
     const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]);
-
     const refs = [useRef(), useRef(), useRef(), useRef()];
 
     const ref0 = refs[0];
@@ -11,39 +10,39 @@ export function PhoneInput() {
     const ref3 = refs[3];
 
     const createChangeHandler = (index) => (e) => {
-        const length = [2, 2, 2, 2];
+        const length = [2, 2, 2, 1];
         const currentMaxLength = length[index];
         const nextRef = refs[index + 1];
         const prevRef = refs[index - 1];
         const value = e.target.value;
 
-        const shouldGoToNextRef = 
-            currentMaxLength === value.length && nextRef.current;  
+        const shouldGoToNextRef = currentMaxLength === value.length && nextRef !== undefined;
+        const shouldGoToPrevRef = value.length === 0 && prevRef !== undefined;
 
-        const shouldGoToPrevRef = value.length === 0;
-
-        const newState = phoneInputState.map((phoneInput, phoneInputIndex) => 
-            index === phoneInputIndex ? e.target.value : phoneInput
-        );
-
-        if (shouldGoToNextRef) {
+        if (shouldGoToNextRef && nextRef.current) {
             nextRef.current.focus();
         }
 
-        if (shouldGoToPrevRef) {
+        if (shouldGoToPrevRef && prevRef.current) {
             prevRef.current.focus();
         }
 
-        setPhoneInputState(newState);
+        const newState = phoneInputState.map((phoneInput, phoneInputIndex) => 
+            index === phoneInputIndex ? e.target.value.slice(0, currentMaxLength) : phoneInput
+        );
+
+        setPhoneInputState(newState); 
     }
 
+    
     return (
         <div>
             <div className="input-wrap" >
-                <label htmlFor="phone">Phone:</label>
+                <label htmlFor="phone">{labelText}:</label>
                 <div id="phone-input-wrap">
 
                     <input 
+                        name={`${inputProps.name}-1`}
                         type="text" 
                         id="phone-input-1" 
                         placeholder="55" 
@@ -53,6 +52,7 @@ export function PhoneInput() {
                     />
                     -
                     <input 
+                        name={`${inputProps.name}-2`}
                         type="text" 
                         id="phone-input-2"
                         placeholder="55" 
@@ -63,6 +63,7 @@ export function PhoneInput() {
                     />
                     -
                     <input 
+                        name={`${inputProps.name}-3`}
                         type="text" 
                         id="phone-input-3" 
                         placeholder="55" 
@@ -72,6 +73,7 @@ export function PhoneInput() {
                     />
                     -
                     <input 
+                        name={`${inputProps.name}-4`}
                         type="text" 
                         id="phone-input-4" 
                         placeholder="5" 
