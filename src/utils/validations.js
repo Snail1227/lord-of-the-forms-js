@@ -4,4 +4,6 @@ export function isEmailValid(emailAddress) {
   return !!emailAddress.match(regex);
 }
 
-
+export function isFirstNameValid(firstName) {
+  return firstName && firstName.length >= 2;
+}

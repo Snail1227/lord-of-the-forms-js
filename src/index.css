@@ -90,6 +90,9 @@ form label {
   justify-content: space-between;
 }
 
+#phone-input-0 {
+  width: 30px;
+}
 #phone-input-1 {
   width: 30px;
 }
@@ -99,14 +102,11 @@ form label {
 #phone-input-3 {
   width: 30px;
 }
-#phone-input-4 {
-  width: 30px;
-}
 
+#phone-input-0,
 #phone-input-1,
 #phone-input-2,
-#phone-input-3,
-#phone-input-4 {
+#phone-input-3 {
   text-align: center;
 }
 
@@ -140,20 +140,20 @@ form label {
   justify-content: space-between;
 }
 
+#phone-input-0 {
+  width: 30px;
+}
 #phone-input-1 {
   width: 30px;
 }
 #phone-input-2 {
   width: 30px;
 }
-#phone-input-3 {
-  width: 30px;
-}
 
+#phone-input-0,
 #phone-input-1,
 #phone-input-2,
-#phone-input-3,
-#phone-input-4 {
+#phone-input-3 {
   text-align: center;
 }
 

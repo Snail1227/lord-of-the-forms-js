@@ -2,9 +2,8 @@ import { ErrorMessage } from "../ErrorMessage";
 import { TextInput } from "./TextInput";
 import { allCities } from "../utils/all-cities";
 import { PhoneInput } from "./PhoneInput";
-
-import { useState, useRef } from 'react';
-
+import { useState, useRef, Fragment } from 'react';
+import { isFistNameValid, isEmailValid  } from "../utils/validations";
 
 const firstNameErrorMessage = "First name must be at least 2 characters long";
 const lastNameErrorMessage = "Last name must be at least 2 characters long";
@@ -12,69 +11,85 @@ const emailErrorMessage = "Email is Invalid";
 const cityErrorMessage = "State is Invalid";
 const phoneNumberErrorMessage = "Invalid Phone Number";
 
-export const FunctionalForm = ( { handleData } ) => {
-
-  // const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]);
-  // const refs = [useRef(), useRef(), useRef(), useRef()];
-
-  // const ref0 = refs[0];
-  // const ref1 = refs[1];
-  // const ref2 = refs[2];
-  // const ref3 = refs[3];
+export const FunctionalForm = ( { formData } ) => {
 
   const [firstNameInput, setFirstNameInput] = useState('');
   const [lastNameInput, setLastNameInput ] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [cityInput, setCityInput] = useState ('');
-  const [phoneInput, setPhoneInput] = useState('');
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]);
+  const refs = [useRef(), useRef(), useRef(), useRef()];
 
-  const [isFistNameValid, setFirstNameValid] = useState(false);
+  const [FistNameValid, setFirstNameValid] = useState(false);
   const [isLastNameValid, setLastNameValid] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isEmailValid, setEmailValid] = useState(false);
   const [isCityValid, setCityValid] = useState(false);
+  const [isPhoneValid, setPhoneValid] = useState(false);
 
 
-  // const createChangeHandler = (index) => (e) => {
-  //   const length = [2, 2, 2, 1];
-  //   const currentMaxLength = length[index];
-  //   const nextRef = refs[index + 1];
-  //   const prevRef = refs[index - 1];
-  //   const value = e.target.value;
+  const createChangeHandler = (index) => (e) => {
+    const length = [2, 2, 2, 1];
+    const currentMaxLength = length[index];
+    const nextRef = refs[index + 1];
+    const prevRef = refs[index - 1];
+    const value = e.target.value;
 
-  //   const shouldGoToNextRef = currentMaxLength === value.length && nextRef !== undefined;
-  //   const shouldGoToPrevRef = value.length === 0 && prevRef !== undefined;
+    const shouldGoToNextRef = currentMaxLength === value.length && nextRef !== undefined;
+    const shouldGoToPrevRef = value.length === 0 && prevRef !== undefined;
 
-  //   if (shouldGoToNextRef && nextRef.current) {
-  //       nextRef.current.focus();
-  //   }
+    if (shouldGoToNextRef && nextRef.current) {
+        nextRef.current.focus();
+    }
+    if (shouldGoToPrevRef && prevRef.current) {
+        prevRef.current.focus();
+    }
 
-  //   if (shouldGoToPrevRef && prevRef.current) {
-  //       prevRef.current.focus();
-  //   }
+    const newState = phoneInputState.map((phoneInput, phoneInputIndex) => 
+        index === phoneInputIndex ? e.target.value.slice(0, currentMaxLength) : phoneInput
+    );
+    setPhoneInputState(newState); 
+  };
 
-  //   const newState = phoneInputState.map((phoneInput, phoneInputIndex) => 
-  //       index === phoneInputIndex ? e.target.value.slice(0, currentMaxLength) : phoneInput
-  //   );
-
-  //   setPhoneInputState(newState); 
-  // }
 
   const reset = () => {
     setFirstNameInput('');
     setLastNameInput('');
     setEmailInput('');
-  }
+    setCityInput('');
+    setPhoneInputState(["", "", "", ""]);
+  };
+
+
+  const handleCityChanges = (city) => {
+    if (city != "" ) {
+      const matchedCities = allCities.filter(c => c.toLowerCase().startsWith(city.toLowerCase()));
+      setFilteredCities(matchedCities);
+      console.log(matchedCities);
+    }
+    setCityInput(city);
+  };
+
+
+  const handleFocus = () => {
+    setFilteredCities(allCities);
+  };
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const data = new FormData(e.target);
-    const handleData = Object.fromEntries(data.entries())
-    console.log(handleData);
-    console.log();
-   
-    reset();  
-  }
+    const handleData = Object.fromEntries(data.entries());
+    const validFirstName = isFirstNameValid(handleData["First name"]);
+    
+    setFirstNameValid(!validFirstName);
+
+
+    // reset();  
+  };
+
 
   return (
     <form 
@@ -85,7 +100,6 @@ export const FunctionalForm = ( { handleData } ) => {
       </u>
 
       {/* first name input */}
-
       <TextInput
         inputProps={{
           onChange:(e) => {
@@ -100,7 +114,6 @@ export const FunctionalForm = ( { handleData } ) => {
       <ErrorMessage message={firstNameErrorMessage}  show={isFistNameValid} />
         
       {/* last name input */}
-
       <TextInput
         inputProps={{
           onChange:(e) => {
@@ -115,13 +128,12 @@ export const FunctionalForm = ( { handleData } ) => {
       <ErrorMessage message={lastNameErrorMessage} show={isLastNameValid} />
 
       {/* Email Input */}
-
       <TextInput
         inputProps={{
           onChange : (e)=> {
             setEmailInput(e.target.value);
           },
-          name:"Email",
+          name: "Email",
           value: emailInput,
           placeholder:"bilbo-baggins@adventurehobbits.net",
         }}
@@ -130,36 +142,50 @@ export const FunctionalForm = ( { handleData } ) => {
       <ErrorMessage message={emailErrorMessage} show={isEmailValid} />
 
       {/* City Input */}
-
       <TextInput
       inputProps = {{
         onChange: (e) => {
+          handleCityChanges(e.target.value);
           setCityInput(e.target.value);
         },
-        name:"City",
+        name: "City",
+        onFocus: handleFocus,
         value: cityInput,
-        placeholder:'Hobbiton',
+        placeholder: 'Hobbiton',
+        list: "cities",
       }}
       labelText={"City"}
       />
       <datalist id="cities">
-                {allCities.map((city, index) => (
-                    <option key={index} value={city} />
+                {filteredCities.map((city) => (
+                    <option key={city} value={city} />
                 ))}
             </datalist>
       <ErrorMessage message={cityErrorMessage} show={isCityValid} />
 
       {/* Phone Input */}
-      <PhoneInput
-        inputProps={{
-          onChange: (e) => {
-            setPhoneInput(e.target.value);
-          },
-          name:"Phone"
-        }}
-        labelText={"Phone"}
-      />
-      <ErrorMessage message={phoneNumberErrorMessage} />
+      <div className="input-wrap" >
+        <label htmlFor="phone">Phone:</label>
+          <div id="phone-input-wrap">
+            {phoneInputState.map((inputValue, i) => (
+              <Fragment key={i}>
+                <PhoneInput
+                  inputProps={{
+                    onChange: createChangeHandler(i),
+                    name: 'Phone-' + i,
+                    id:"phone-input-" + i,
+                    placeholder: i < 3 ? "55" : "5", 
+                    ref: refs[i], 
+                    value: inputValue,
+                    maxLength: i < 3 ? 2 : 1
+                  }}
+                />
+                {i < phoneInputState.length - 1 && <span>-</span>}
+              </Fragment>
+              ))}   
+          </div>
+      </div>
+      <ErrorMessage message={phoneNumberErrorMessage} show={isPhoneValid} />
 
       <input type="submit" value="Submit" />
     </form>
