@@ -3,7 +3,10 @@ import { TextInput } from "./TextInput";
 import { allCities } from "../utils/all-cities";
 import { PhoneInput } from "./PhoneInput";
 import { useState, useRef, Fragment } from 'react';
-import { isFistNameValid, isEmailValid  } from "../utils/validations";
+import { 
+  firstNameValidation, 
+  lastNameValidation,
+  emailValidation } from "../utils/validations";
 
 const firstNameErrorMessage = "First name must be at least 2 characters long";
 const lastNameErrorMessage = "Last name must be at least 2 characters long";
@@ -13,6 +16,8 @@ const phoneNumberErrorMessage = "Invalid Phone Number";
 
 export const FunctionalForm = ( { formData } ) => {
 
+  const [submitCount, setSubmitCount] = useState(0);
+
   const [firstNameInput, setFirstNameInput] = useState('');
   const [lastNameInput, setLastNameInput ] = useState('');
   const [emailInput, setEmailInput] = useState('');
@@ -21,12 +26,44 @@ export const FunctionalForm = ( { formData } ) => {
   const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]);
   const refs = [useRef(), useRef(), useRef(), useRef()];
 
-  const [FistNameValid, setFirstNameValid] = useState(false);
+  const [isFirstNameValid, setFirstNameValid] = useState(false);
   const [isLastNameValid, setLastNameValid] = useState(false);
-  const [isEmailValid, setEmailValid] = useState(false);
+  const [isEmailValid, setEmailValid] = useState(null);
   const [isCityValid, setCityValid] = useState(false);
   const [isPhoneValid, setPhoneValid] = useState(false);
 
+
+  const currentFirstNameValidation = (firstName) => {
+    if (submitCount >= 1) {
+      setFirstNameValid(firstNameValidation(firstName));
+    }
+  };
+
+  const currentLastNameValidation = (lastName) => {
+    if (submitCount >= 1) {
+      setLastNameValid(lastNameValidation(lastName));
+    }
+  };
+
+  const currentEmailValidation = (email) => {
+    if (submitCount >= 1) {
+      setEmailValid(emailValidation(email));
+    }
+  }
+
+  const handleCityChanges = (city) => {
+    if (city != "" ) {
+      const matchedCities = allCities.filter(c => c.toLowerCase().startsWith(city.toLowerCase()));
+      setFilteredCities(matchedCities);
+    }
+    setCityInput(city);
+  };
+
+
+  const handleFocus = () => {
+    setFilteredCities(allCities);
+  };
+  
 
   const createChangeHandler = (index) => (e) => {
     const length = [2, 2, 2, 1];
@@ -61,32 +98,16 @@ export const FunctionalForm = ( { formData } ) => {
   };
 
 
-  const handleCityChanges = (city) => {
-    if (city != "" ) {
-      const matchedCities = allCities.filter(c => c.toLowerCase().startsWith(city.toLowerCase()));
-      setFilteredCities(matchedCities);
-      console.log(matchedCities);
-    }
-    setCityInput(city);
-  };
-
-
-  const handleFocus = () => {
-    setFilteredCities(allCities);
-  };
-
-
-
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSubmitCount((preCount) => preCount + 1);
 
-    const data = new FormData(e.target);
-    const handleData = Object.fromEntries(data.entries());
-    const validFirstName = isFirstNameValid(handleData["First name"]);
+    // const data = new FormData(e.target);
+    // const handleData = Object.fromEntries(data.entries());
+    setFirstNameValid(firstNameValidation(firstNameInput));
+    setLastNameValid(lastNameValidation(lastNameInput));
+    setEmailValid(emailValidation(isEmailValid));
     
-    setFirstNameValid(!validFirstName);
-
-
     // reset();  
   };
 
@@ -103,7 +124,8 @@ export const FunctionalForm = ( { formData } ) => {
       <TextInput
         inputProps={{
           onChange:(e) => {
-            setFirstNameInput(e.target.value);
+            currentFirstNameValidation(e.target.value);
+            setFirstNameInput(e.target.value); 
           },
           name: "First name",
           value: firstNameInput,
@@ -111,12 +133,13 @@ export const FunctionalForm = ( { formData } ) => {
         }}
         labelText={"First Name"}
       />
-      <ErrorMessage message={firstNameErrorMessage}  show={isFistNameValid} />
+      <ErrorMessage message={firstNameErrorMessage}  show={isFirstNameValid} />
         
       {/* last name input */}
       <TextInput
         inputProps={{
           onChange:(e) => {
+            currentLastNameValidation(e.target.value);
             setLastNameInput(e.target.value);
           },
           name: "Last name",
@@ -131,6 +154,7 @@ export const FunctionalForm = ( { formData } ) => {
       <TextInput
         inputProps={{
           onChange : (e)=> {
+            currentEmailValidation(e.target.value);
             setEmailInput(e.target.value);
           },
           name: "Email",
