@@ -9,7 +9,17 @@ export const InfoRow = ({ label, value }) => {
   );
 };
 export const ProfileInformation = ({ userData }) => {
-  if (!userData) {
+
+  const { email, firstName, lastName, phone, city } = userData;
+
+  const info = 
+    email.length === 0 &&
+    firstName.length === 0 &&
+    lastName.length === 0 &&
+    phone.length === 0 &&
+    city.length === 0 
+  
+  if (info) {
     return (
       <>
         <u>
@@ -20,9 +30,8 @@ export const ProfileInformation = ({ userData }) => {
         </div>
       </>
     );
-  }
-  // eslint-disable-next-line no-unused-vars
-  const { email, firstName, lastName, phone: _phone, city } = userData;
+  } 
+
   return (
     <>
       <u>
@@ -33,9 +42,9 @@ export const ProfileInformation = ({ userData }) => {
         <InfoRow label="First Name" value={firstName} />
         <InfoRow label="Last Name" value={lastName} />
         <InfoRow label="City" value={city} />
-        {/* You will need to format the string "nnnnnnn" as "nn-nn-nn-n" */}
-        <InfoRow label="Phone" value={"12-34-56-7"} />
+        <InfoRow label="Phone" value={phone} />
       </div>
     </>
   );
+
 };

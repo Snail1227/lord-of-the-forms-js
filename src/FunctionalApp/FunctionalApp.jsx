@@ -1,32 +1,56 @@
 import { ProfileInformation } from "../ProfileInformation";
 import { FunctionalForm } from "./FunctionalForm";
+import { capitalize, formatPhoneNumber } from "../utils/transformations"
 import { useState } from 'react';
 
 export const FunctionalApp = () => {
 
-  // const [formData, setFormData] = useState({
-  //   firstName: 'Garri',
-  //   lastName: 'Doe',
-  //   email: 'john.doe@example.com',
-  //   // ... any other necessary data ...
-  // });
-
-  const formData = (d) => {
-    const firstName = d['First Name'];
-    console.log(firstName);
+  const [transformedFirstName, setTransformedFirstName] = useState('');
+  const [transformedLastName, setTransformedLastName] = useState('');
+  const [emailInput, setEmailInput] = useState('');
+  const [cityInput, setCityInput] = useState('');
+  const [phoneInput, setPhoneInput] = useState('');
+  
+  const firstNameInput = (firstName) => {
+    setTransformedFirstName(capitalize(firstName));
   }
 
-  
+  const lastNameInput = (lastName) => {
+    setTransformedLastName(capitalize(lastName));
+  }
 
+  const email = (e) => {
+    setEmailInput(e);
+  }
+
+  const city = (c) => {
+    setCityInput(c);
+  }
+
+  const phoneNumber = (phone) => {
+    setPhoneInput(formatPhoneNumber(phone));
+  }
+
+  const userData = {
+    firstName: transformedFirstName,
+    lastName: transformedLastName,
+    email: emailInput,
+    city: cityInput,
+    phone: phoneInput
+  };
 
   return (
     <>
       <h2>Functional</h2>
-      <ProfileInformation 
-        userData={formData} 
-      />
+      {<ProfileInformation 
+        userData={userData} 
+      />}
       <FunctionalForm  
-        formData={formData}
+        firstName={firstNameInput}
+        lastName={lastNameInput}
+        email={email}
+        city={city}
+        phoneNumber={phoneNumber}
       />
     </>
   );

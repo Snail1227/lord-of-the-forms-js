@@ -16,7 +16,7 @@ const emailErrorMessage = "Email is Invalid";
 const cityErrorMessage = "State is Invalid";
 const phoneNumberErrorMessage = "Invalid Phone Number";
 
-export const FunctionalForm = ( { formData } ) => {
+export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber } ) => {
 
   const [submitCount, setSubmitCount] = useState(0);
 
@@ -105,7 +105,6 @@ export const FunctionalForm = ( { formData } ) => {
     setPhoneInputState(newState);
 };
 
-
   const reset = () => {
     setFirstNameInput('');
     setLastNameInput('');
@@ -125,13 +124,18 @@ export const FunctionalForm = ( { formData } ) => {
     setCityValid(cityValidation(cityInput));
     setPhoneValid(phoneValidation(phoneInputState));
 
+    const isValidData = isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid
 
-    const data = new FormData(e.target);
-    const handleData = Object.fromEntries(data.entries());
+    if (!isValidData) {
+      firstName(firstNameInput);
+      lastName(lastNameInput);
+      email(emailInput);
+      city(cityInput);
+      phoneNumber(phoneInputState);
 
-    formData(handleData);
+      reset();  
+    }
     
-    // reset();  
   };
 
 
