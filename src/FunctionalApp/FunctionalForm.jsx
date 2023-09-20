@@ -124,9 +124,13 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
     setCityValid(cityValidation(cityInput));
     setPhoneValid(phoneValidation(phoneInputState));
 
-    const isValidData = isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid
-
-    if (!isValidData) {
+    const isValidData = (
+      !(isFirstNameValid && isLastNameValid && isCityValid && 
+      isEmailValid && isPhoneValid) &&
+      Boolean(firstNameInput && lastNameInput && 
+        emailInput && cityInput && phoneInputState.join('')));
+    
+    if (isValidData) {
       firstName(firstNameInput);
       lastName(lastNameInput);
       email(emailInput);
@@ -137,7 +141,6 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
     }
     
   };
-
 
   return (
     <form 
@@ -209,10 +212,10 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
       labelText={"City"}
       />
       <datalist id="cities">
-                {filteredCities.map((city) => (
-                    <option key={city} value={city} />
-                ))}
-            </datalist>
+        {filteredCities.map((city) => (
+            <option key={city} value={city} />
+        ))}
+      </datalist>
       <ErrorMessage message={cityErrorMessage} show={isCityValid} />
 
       {/* Phone Input */}
@@ -224,8 +227,8 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
                 <PhoneInput
                   inputProps={{
                     onChange: (e) => {
-                      currentPhoneValidation(e.target.value);
                       createChangeHandler(i)(e);
+                      currentPhoneValidation(e.target.value);
                     },
                     name: 'Phone-' + i,
                     id:"phone-input-" + i,

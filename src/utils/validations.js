@@ -22,11 +22,5 @@ export function cityValidation(city) {
 }
 
 export function phoneValidation(phone) {
-  
-  if (phone.join('').length === 7) {
-    return false
-  } else {
-    return true
-  }
-
+  return !(phone.join('').length === 7);
 }

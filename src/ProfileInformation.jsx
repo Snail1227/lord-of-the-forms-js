@@ -17,7 +17,8 @@ export const ProfileInformation = ({ userData }) => {
     firstName.length === 0 &&
     lastName.length === 0 &&
     phone.length === 0 &&
-    city.length === 0 
+    city.length === 0;
+
   
   if (info) {
     return (
@@ -31,7 +32,7 @@ export const ProfileInformation = ({ userData }) => {
       </>
     );
   } 
-
+  
   return (
     <>
       <u>

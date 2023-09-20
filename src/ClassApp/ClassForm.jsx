@@ -21,7 +21,7 @@ export default class FunctionalForm extends Component {
     super(props);
     this.state = {
       submitCount: 0,
-      firstNameInput: '',
+      firstNameInput: "",
       lastNameInput: '',
       emailInput: '',
       cityInput: '',
@@ -87,6 +87,7 @@ export default class FunctionalForm extends Component {
     const prevRef = this.phoneRefs[index - 1];
 
     const value = e.target.value.replace(/[^0-9]/g, '');
+
     const shouldGoToNextRef = currentMaxLength === value.length && nextRef;
     const shouldGoToPrevRef = value.length === 0 && prevRef;
 
@@ -124,9 +125,27 @@ export default class FunctionalForm extends Component {
       isPhoneValid: phoneValidation(prevState.phoneInputState)
     }));
 
+    
     const { isFirstNameValid, isLastNameValid, isCityValid, isEmailValid, isPhoneValid } = this.state;
+    
+    console.log(!(isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid) &&
+    Boolean(this.firstNameInput && this.lastNameInput && 
+      this.emailInput && this.cityInput && this.phoneInputState.join('')))
 
-    if (isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid) {
+      console.log(!(isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid))
+      console.log(Boolean(this.firstNameInput && this.lastNameInput && 
+        this.emailInput && this.cityInput && this.phoneInputState.join('')))
+
+      console.log(this.firstNameInput + ' --- first name')
+      console.log(isFirstNameValid)
+      console.log(isLastNameValid)
+      console.log(isCityValid)
+      console.log(isEmailValid)
+      console.log(isPhoneValid)
+
+    if (!(isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid) &&
+    Boolean(this.firstNameInput && this.lastNameInput && 
+      this.emailInput && this.cityInput && this.phoneInputState.join(''))) {
       this.reset();  
     }
   };
@@ -159,6 +178,7 @@ export default class FunctionalForm extends Component {
             onChange: (e) => {
               this.currentLastNameValidation(e.target.value);
               this.setState({ lastNameInput: e.target.value });
+              
             },
             name: "Last name",
             value: lastNameInput,

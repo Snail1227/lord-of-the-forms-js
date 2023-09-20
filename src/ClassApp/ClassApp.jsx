@@ -12,7 +12,7 @@ export class ClassApp extends Component {
       transformedFirstName: '',
       transformedLastName: '',
       emailInput: '',
-      cityInput: '',
+      cityInput: '', 
       phoneInput: '',
     };
   }
@@ -45,6 +45,8 @@ export class ClassApp extends Component {
       city: this.state.cityInput,
       phone: this.state.phoneInput
     };
+
+    console.log(this.emailInput)
 
     return (
       <>
