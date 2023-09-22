@@ -46,8 +46,6 @@ export class ClassApp extends Component {
       phone: this.state.phoneInput
     };
 
-    console.log(this.emailInput)
-
     return (
       <>
         <h2>Class</h2>

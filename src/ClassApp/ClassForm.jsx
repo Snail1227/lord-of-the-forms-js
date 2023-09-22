@@ -16,7 +16,7 @@ const emailErrorMessage = "Email is Invalid";
 const cityErrorMessage = "State is Invalid";
 const phoneNumberErrorMessage = "Invalid Phone Number";
 
-export default class FunctionalForm extends Component {
+export default class ClassForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -68,10 +68,13 @@ export default class FunctionalForm extends Component {
     }
   };
 
+
   handleCityChanges = (city) => {
     if (city !== "") {
       const matchedCities = allCities.filter(c => c.toLowerCase().startsWith(city.toLowerCase()));
-      this.setState({ filteredCities: matchedCities });
+      this.setState({ 
+        filteredCities: matchedCities,
+        cityInput: city });
     }
     this.setState({ cityInput: city });
   };
@@ -79,6 +82,7 @@ export default class FunctionalForm extends Component {
   handleFocus = () => {
     this.setState({ filteredCities: allCities });
   };
+
 
   createChangeHandler = (index) => (e) => {
     const length = [2, 2, 2, 1];
@@ -116,36 +120,36 @@ export default class FunctionalForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    
     this.setState((prevState) => ({
       submitCount: prevState.submitCount + 1,
-      isFirstNameValid: firstNameValidation(prevState.firstNameInput),
-      isLastNameValid: lastNameValidation(prevState.lastNameInput),
-      isEmailValid: emailValidation(prevState.emailInput),
-      isCityValid: cityValidation(prevState.cityInput),
-      isPhoneValid: phoneValidation(prevState.phoneInputState)
+      isFirstNameValid: firstNameValidation(this.state.firstNameInput),
+      isLastNameValid: lastNameValidation(this.state.lastNameInput),
+      isEmailValid: emailValidation(this.state.emailInput),
+      isCityValid: cityValidation(this.state.cityInput),
+      isPhoneValid: phoneValidation(this.state.phoneInputState)
     }));
 
-    
-    const { isFirstNameValid, isLastNameValid, isCityValid, isEmailValid, isPhoneValid } = this.state;
-    
-    console.log(!(isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid) &&
-    Boolean(this.firstNameInput && this.lastNameInput && 
-      this.emailInput && this.cityInput && this.phoneInputState.join('')))
+    const isDataValid = (
+      (!firstNameValidation(this.state.firstNameInput) &&
+      !lastNameValidation(this.state.lastNameInput) && 
+      !emailValidation(this.state.emailInput) && 
+      !cityValidation(this.state.cityInput) && 
+      !phoneValidation(this.state.phoneInputState)
+      )
+    );
 
-      console.log(!(isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid))
-      console.log(Boolean(this.firstNameInput && this.lastNameInput && 
-        this.emailInput && this.cityInput && this.phoneInputState.join('')))
+    if (isDataValid) {
+      this.props.firstName(this.state.firstNameInput);
+      this.props.lastName(this.state.lastNameInput);
+      this.props.email(this.state.emailInput);
+      this.props.city(this.state.cityInput);
+      this.props.phoneNumber(this.state.phoneInputState);
 
-      console.log(this.firstNameInput + ' --- first name')
-      console.log(isFirstNameValid)
-      console.log(isLastNameValid)
-      console.log(isCityValid)
-      console.log(isEmailValid)
-      console.log(isPhoneValid)
-
-    if (!(isFirstNameValid && isLastNameValid && isCityValid && isEmailValid && isPhoneValid) &&
-    Boolean(this.firstNameInput && this.lastNameInput && 
-      this.emailInput && this.cityInput && this.phoneInputState.join(''))) {
+      this.setState({
+        submitCount: 0
+      });
+      
       this.reset();  
     }
   };

@@ -124,19 +124,23 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
     setCityValid(cityValidation(cityInput));
     setPhoneValid(phoneValidation(phoneInputState));
 
-    const isValidData = (
-      !(isFirstNameValid && isLastNameValid && isCityValid && 
-      isEmailValid && isPhoneValid) &&
-      Boolean(firstNameInput && lastNameInput && 
-        emailInput && cityInput && phoneInputState.join('')));
-    
-    if (isValidData) {
+    const isDataValid = (
+      (!firstNameValidation(firstNameInput) &&
+      !lastNameValidation(lastNameInput) && 
+      !emailValidation(emailInput) && 
+      !cityValidation(cityInput) && 
+      !phoneValidation(phoneInputState)
+      )
+    )
+
+    if (isDataValid) {
       firstName(firstNameInput);
       lastName(lastNameInput);
       email(emailInput);
       city(cityInput);
       phoneNumber(phoneInputState);
 
+      setSubmitCount((preCount) => preCount === 0);
       reset();  
     }
     
