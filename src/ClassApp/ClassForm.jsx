@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { ErrorMessage } from "../ErrorMessage";
 import { TextInput } from "./TextInput";
-import { allCities }  from "../utils/all-cities";
 import { PhoneInput } from "./PhoneInput";
 import { 
   firstNameValidation, 
@@ -70,19 +69,8 @@ export default class ClassForm extends Component {
 
 
   handleCityChanges = (city) => {
-    if (city !== "") {
-      const matchedCities = allCities.filter(c => c.toLowerCase().startsWith(city.toLowerCase()));
-      this.setState({ 
-        filteredCities: matchedCities,
-        cityInput: city });
-    }
     this.setState({ cityInput: city });
   };
-
-  handleFocus = () => {
-    this.setState({ filteredCities: allCities });
-  };
-
 
   createChangeHandler = (index) => (e) => {
     const length = [2, 2, 2, 1];
@@ -155,7 +143,7 @@ export default class ClassForm extends Component {
   };
 
   render() {
-    const { firstNameInput, lastNameInput, emailInput, cityInput, filteredCities, phoneInputState, isFirstNameValid, isLastNameValid, isEmailValid, isCityValid, isPhoneValid } = this.state;
+    const { firstNameInput, lastNameInput, emailInput, cityInput, phoneInputState, isFirstNameValid, isLastNameValid, isEmailValid, isCityValid, isPhoneValid } = this.state;
 
     return (
       <form onSubmit={this.handleSubmit}>
@@ -214,18 +202,12 @@ export default class ClassForm extends Component {
               this.setState({ cityInput: e.target.value });
             },
             name: "City",
-            onFocus: this.handleFocus,
             value: cityInput,
             placeholder: 'Hobbiton',
             list: "cities",
           }}
           labelText={"City"}
         />
-        <datalist id="cities">
-          {filteredCities.map((city) => (
-            <option key={city} value={city} />
-          ))}
-        </datalist>
         <ErrorMessage message={cityErrorMessage} show={isCityValid} />
 
         <div className="input-wrap">

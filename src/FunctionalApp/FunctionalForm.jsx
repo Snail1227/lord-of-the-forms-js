@@ -1,8 +1,7 @@
 import { ErrorMessage } from "../ErrorMessage";
 import { TextInput } from "./TextInput";
-import { allCities } from "../utils/all-cities";
 import { PhoneInput } from "./PhoneInput";
-import { useState, useRef, Fragment } from 'react';
+import { useState, useRef, } from 'react';
 import { 
   firstNameValidation, 
   lastNameValidation,
@@ -24,62 +23,21 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
   const [lastNameInput, setLastNameInput ] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [cityInput, setCityInput] = useState ('');
-
-  const [filteredCities, setFilteredCities] = useState([]);
   
   const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]);
   const refs = [useRef(), useRef(), useRef(), useRef()];
 
-  const [isFirstNameValid, setFirstNameValid] = useState(false);
-  const [isLastNameValid, setLastNameValid] = useState(false);
-  const [isEmailValid, setEmailValid] = useState(false);
-  const [isCityValid, setCityValid] = useState(false);
-  const [isPhoneValid, setPhoneValid] = useState(false);
-
-
-  const currentFirstNameValidation = (firstName) => {
-    if (submitCount >= 1) {
-      setFirstNameValid(firstNameValidation(firstName));
-    }
-  };
-
-  const currentLastNameValidation = (lastName) => {
-    if (submitCount >= 1) {
-      setLastNameValid(lastNameValidation(lastName));
-    }
-  };
-
-  const currentEmailValidation = (email) => {
-    if (submitCount >= 1) {
-      setEmailValid(emailValidation(email));
-    }
-  }
-
-  const currentCityValidation = (city) => {
-    if (submitCount >= 1) {
-      setCityValid(cityValidation(city));
-    }
-  } 
-
-  const currentPhoneValidation = (phone) => {
-    if (submitCount >= 1) {
-      setPhoneValid(phoneValidation(phone));
-    }
-  }
+  const isFirstNameBad = submitCount >= 1 ? firstNameValidation(firstNameInput) : false;
+  const isLastNameBad = submitCount >= 1 ? lastNameValidation(lastNameInput) : false;
+  const isEmailBad = submitCount >= 1 ? emailValidation(emailInput) : false;
+  const isCityBad = submitCount >= 1 ? cityValidation(cityInput) : false;
+  const isPhoneBad = submitCount >= 1 ? phoneValidation(phoneInputState) : false;
+  
 
   const handleCityChanges = (city) => {
-    if (city != "" ) {
-      const matchedCities = allCities.filter(c => c.toLowerCase().startsWith(city.toLowerCase()));
-      setFilteredCities(matchedCities);
-    }
     setCityInput(city);
   };
 
-
-  const handleFocus = () => {
-    setFilteredCities(allCities);
-  };
-  
 
   const createChangeHandler = (index) => (e) => {
     const length = [2, 2, 2, 1];
@@ -118,11 +76,11 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
     e.preventDefault();
     setSubmitCount((preCount) => preCount + 1);
 
-    setFirstNameValid(firstNameValidation(firstNameInput));
-    setLastNameValid(lastNameValidation(lastNameInput));
-    setEmailValid(emailValidation(emailInput));
-    setCityValid(cityValidation(cityInput));
-    setPhoneValid(phoneValidation(phoneInputState));
+    firstNameValidation(firstNameInput);
+    lastNameValidation(lastNameInput);
+    emailValidation(emailInput);
+    cityValidation(cityInput);
+    phoneValidation(phoneInputState);
 
     const isDataValid = (
       (!firstNameValidation(firstNameInput) &&
@@ -132,6 +90,8 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
       !phoneValidation(phoneInputState)
       )
     )
+
+    console.log(isDataValid)
 
     if (isDataValid) {
       firstName(firstNameInput);
@@ -158,7 +118,6 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
       <TextInput
         inputProps={{
           onChange:(e) => {
-            currentFirstNameValidation(e.target.value);
             setFirstNameInput(e.target.value); 
           },
           name: "First name",
@@ -167,13 +126,12 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
         }}
         labelText={"First Name"}
       />
-      <ErrorMessage message={firstNameErrorMessage}  show={isFirstNameValid} />
+      <ErrorMessage message={firstNameErrorMessage}  show={isFirstNameBad} />
         
       {/* last name input */}
       <TextInput
         inputProps={{
           onChange:(e) => {
-            currentLastNameValidation(e.target.value);
             setLastNameInput(e.target.value);
           },
           name: "Last name",
@@ -182,13 +140,12 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
         }}
         labelText={"Last Name"}
       />
-      <ErrorMessage message={lastNameErrorMessage} show={isLastNameValid} />
+      <ErrorMessage message={lastNameErrorMessage} show={isLastNameBad} />
 
       {/* Email Input */}
       <TextInput
         inputProps={{
           onChange : (e)=> {
-            currentEmailValidation(e.target.value);
             setEmailInput(e.target.value);
           },
           name: "Email",
@@ -197,57 +154,34 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
         }}
         labelText={"Email"}
       />
-      <ErrorMessage message={emailErrorMessage} show={isEmailValid} />
+      <ErrorMessage message={emailErrorMessage} show={isEmailBad} />
 
       {/* City Input */}
       <TextInput
       inputProps = {{
         onChange: (e) => {
-          currentCityValidation(e.target.value);
           handleCityChanges(e.target.value);
           setCityInput(e.target.value);
         },
         name: "City",
-        onFocus: handleFocus,
         value: cityInput,
         placeholder: 'Hobbiton',
         list: "cities",
       }}
       labelText={"City"}
       />
-      <datalist id="cities">
-        {filteredCities.map((city) => (
-            <option key={city} value={city} />
-        ))}
-      </datalist>
-      <ErrorMessage message={cityErrorMessage} show={isCityValid} />
+      <ErrorMessage message={cityErrorMessage} show={isCityBad} />
 
       {/* Phone Input */}
-      <div className="input-wrap" >
-        <label htmlFor="phone">Phone:</label>
-          <div id="phone-input-wrap">
-            {phoneInputState.map((inputValue, i) => (
-              <Fragment key={i}>
-                <PhoneInput
-                  inputProps={{
-                    onChange: (e) => {
-                      createChangeHandler(i)(e);
-                      currentPhoneValidation(e.target.value);
-                    },
-                    name: 'Phone-' + i,
-                    id:"phone-input-" + i,
-                    placeholder: i < 3 ? "55" : "5", 
-                    ref: refs[i], 
-                    value: inputValue,
-                    maxLength: i < 3 ? 2 : 1
-                  }}
-                />
-                {i < phoneInputState.length - 1 && <span>-</span>}
-              </Fragment>
-              ))}   
-          </div>
-      </div>
-      <ErrorMessage message={phoneNumberErrorMessage} show={isPhoneValid} />
+      
+      <PhoneInput
+        phoneInputState={phoneInputState}
+        setPhoneInputState={setPhoneInputState}
+        refs={refs}
+        createChangeHandler={createChangeHandler}
+        phoneNumberErrorMessage={phoneNumberErrorMessage}
+        isPhoneBad={isPhoneBad}
+      />
 
       <input type="submit" value="Submit" />
     </form>
