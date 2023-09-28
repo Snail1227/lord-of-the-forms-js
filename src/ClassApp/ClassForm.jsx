@@ -27,15 +27,11 @@ export default class ClassForm extends Component {
     phoneInputState: ["", "", "", ""]
   };
 
-  isFirstNameBad = () => this.state.submitCount >= 1 ? firstNameValidation(this.state.firstNameInput) : false;
-  isLastNameBad = () => this.state.submitCount >= 1 ? lastNameValidation(this.state.lastNameInput) : false;
-  isEmailBad = () => this.state.submitCount >= 1 ? emailValidation(this.state.emailInput) : false;
-  isCityBad = () => this.state.submitCount >= 1 ? cityValidation(this.state.cityInput) : false;
-  isPhoneBad = () => this.state.submitCount >= 1 ? phoneValidation(this.state.phoneInputState) : false;
-
-  handleCityChanges = (city) => {
-    this.setState({ cityInput: city });
-  };
+  isFirstNameBad = () => this.state.submitCount >= 1 && firstNameValidation(this.state.firstNameInput);
+  isLastNameBad = () => this.state.submitCount >= 1 && lastNameValidation(this.state.lastNameInput);
+  isEmailBad = () => this.state.submitCount >= 1 && emailValidation(this.state.emailInput);
+  isCityBad = () => this.state.submitCount >= 1 && cityValidation(this.state.cityInput);
+  isPhoneBad = () => this.state.submitCount >= 1 && phoneValidation(this.state.phoneInputState);
 
   reset = () => {
     this.setState({
@@ -49,16 +45,21 @@ export default class ClassForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    this.setState(prevState => ({ submitCount: prevState.submitCount + 1}));
 
-    this.setState(prevState => ({ submitCount: prevState.submitCount + 1 }));
+    firstNameValidation(this.state.firstNameInput)
+    lastNameValidation(this.state.lastNameInput);
+    emailValidation(this.state.emailInput);
+    cityValidation(this.state.cityInput);
+    phoneValidation(this.state.phoneInputState);
 
     const isDataValid = (
-      (!this.isFirstNameBad() &&
-      !this.isLastNameBad() && 
-      !this.isEmailBad() && 
-      !this.isCityBad() && 
-      !this.isPhoneBad())
-    )
+      !firstNameValidation(this.state.firstNameInput) &&
+      !lastNameValidation(this.state.lastNameInput) &&
+      !emailValidation(this.state.emailInput) &&
+      !cityValidation(this.state.cityInput) &&
+      !phoneValidation(this.state.phoneInputState)
+      )
 
     if (isDataValid) {
       this.props.onSubmitData({
@@ -122,7 +123,6 @@ export default class ClassForm extends Component {
         <TextInput
           inputProps = {{
             onChange: (e) => {
-              this.handleCityChanges(e.target.value);
               this.setState({ cityInput: e.target.value });
             },
             name: "City",

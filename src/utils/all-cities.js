@@ -115,3 +115,6 @@ export const allCities = [
     "Willowbottom",
     "Woodhall",
 ];
+
+
+export const lowerCaseCities = allCities.map(city => city.toLowerCase())

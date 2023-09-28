@@ -12,13 +12,10 @@ export const FunctionalApp = () => {
         userData={user} 
       />
       <FunctionalForm  
-        onSubmitData={userData => {
+        onSubmitData={({ phoneNumber, ...restOfData }) => {
           setUser({
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            city: userData.city,
-            phone: userData.phoneNumber
+            ...restOfData,
+            phone: phoneNumber
           })
         }}
       />

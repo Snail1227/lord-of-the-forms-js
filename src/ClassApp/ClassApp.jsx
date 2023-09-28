@@ -23,14 +23,11 @@ export class ClassApp extends Component {
           userData={user} 
         />
         <ClassForm  
-          onSubmitData={this.Data = (userData) => {
+          onSubmitData={({  phoneNumber, ...restOfData }) => {
             this.setState({
               user: {
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                email: userData.email,
-                city: userData.city,
-                phone: userData.phoneNumber
+                ...restOfData,
+                phone: phoneNumber
               }
             })
           }}

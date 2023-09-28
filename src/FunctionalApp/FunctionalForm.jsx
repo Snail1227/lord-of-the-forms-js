@@ -26,15 +26,11 @@ export const FunctionalForm = ( { onSubmitData } ) => {
   const [cityInput, setCityInput] = useState ('');
   const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]); 
 
-  const isFirstNameBad = submitCount >= 1 ? firstNameValidation(firstNameInput) : false;
-  const isLastNameBad = submitCount >= 1 ? lastNameValidation(lastNameInput) : false;
-  const isEmailBad = submitCount >= 1 ? emailValidation(emailInput) : false;
-  const isCityBad = submitCount >= 1 ? cityValidation(cityInput) : false;
-  const isPhoneBad = submitCount >= 1 ? phoneValidation(phoneInputState) : false;
-  
-  const handleCityChanges = (city) => {
-    setCityInput(city);
-  };
+  const isFirstNameBad = submitCount >= 1 && firstNameValidation(firstNameInput);
+  const isLastNameBad = submitCount >= 1 && lastNameValidation(lastNameInput);
+  const isEmailBad = submitCount >= 1 && emailValidation(emailInput);
+  const isCityBad = submitCount >= 1 && cityValidation(cityInput);
+  const isPhoneBad = submitCount >= 1 && phoneValidation(phoneInputState);
 
   const reset = () => {
     setFirstNameInput('');
@@ -132,7 +128,6 @@ export const FunctionalForm = ( { onSubmitData } ) => {
       <TextInput
       inputProps = {{
         onChange: (e) => {
-          handleCityChanges(e.target.value);
           setCityInput(e.target.value);
         },
         name: "City",

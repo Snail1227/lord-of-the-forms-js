@@ -1,4 +1,4 @@
-import { allCities } from "./all-cities";
+import { lowerCaseCities } from "./all-cities";
 
 export function firstNameValidation(firstName) {
   return firstName.length < 2;
@@ -14,11 +14,7 @@ export function emailValidation(emailAddress) {
 }
 
 export function cityValidation(city) {
-  if (allCities.includes(city)) {
-    return false;
-  } else {
-    return true;
-  }
+  return !(lowerCaseCities.includes(city.toLowerCase()));
 }
 
 export function phoneValidation(phone) {
