@@ -1,7 +1,8 @@
 import { ErrorMessage } from "../ErrorMessage";
 import { TextInput } from "./TextInput";
 import { PhoneInput } from "./PhoneInput";
-import { useState, useRef, } from 'react';
+import { useState } from 'react';
+import { capitalize, formatPhoneNumber } from "../utils/transformations"
 import { 
   firstNameValidation, 
   lastNameValidation,
@@ -15,7 +16,7 @@ const emailErrorMessage = "Email is Invalid";
 const cityErrorMessage = "State is Invalid";
 const phoneNumberErrorMessage = "Invalid Phone Number";
 
-export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber } ) => {
+export const FunctionalForm = ( { onSubmitData } ) => {
 
   const [submitCount, setSubmitCount] = useState(0);
 
@@ -23,9 +24,7 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
   const [lastNameInput, setLastNameInput ] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [cityInput, setCityInput] = useState ('');
-  
-  const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]);
-  const refs = [useRef(), useRef(), useRef(), useRef()];
+  const [phoneInputState, setPhoneInputState] = useState(["", "", "", ""]); 
 
   const isFirstNameBad = submitCount >= 1 ? firstNameValidation(firstNameInput) : false;
   const isLastNameBad = submitCount >= 1 ? lastNameValidation(lastNameInput) : false;
@@ -33,35 +32,9 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
   const isCityBad = submitCount >= 1 ? cityValidation(cityInput) : false;
   const isPhoneBad = submitCount >= 1 ? phoneValidation(phoneInputState) : false;
   
-
   const handleCityChanges = (city) => {
     setCityInput(city);
   };
-
-
-  const createChangeHandler = (index) => (e) => {
-    const length = [2, 2, 2, 1];
-    const currentMaxLength = length[index];
-    const nextRef = refs[index + 1];
-    const prevRef = refs[index - 1];
-    
-    const value = e.target.value.replace(/[^0-9]/g, '');
-
-    const shouldGoToNextRef = currentMaxLength === value.length && nextRef !== undefined;
-    const shouldGoToPrevRef = value.length === 0 && prevRef !== undefined;
-
-    if (shouldGoToNextRef && nextRef.current) {
-        nextRef.current.focus();
-    }
-    if (shouldGoToPrevRef && prevRef.current) {
-        prevRef.current.focus();
-    }
-
-    const newState = phoneInputState.map((phoneInput, phoneInputIndex) => 
-        index === phoneInputIndex ? value.slice(0, currentMaxLength) : phoneInput
-    );
-    setPhoneInputState(newState);
-};
 
   const reset = () => {
     setFirstNameInput('');
@@ -70,7 +43,6 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
     setCityInput('');
     setPhoneInputState(["", "", "", ""]);
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -91,19 +63,19 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
       )
     )
 
-    console.log(isDataValid)
-
     if (isDataValid) {
-      firstName(firstNameInput);
-      lastName(lastNameInput);
-      email(emailInput);
-      city(cityInput);
-      phoneNumber(phoneInputState);
+
+      onSubmitData({
+        firstName: firstNameInput,
+        lastName: lastNameInput,
+        email: emailInput,
+        city: cityInput,
+        phoneNumber: formatPhoneNumber(phoneInputState),
+      })
 
       setSubmitCount((preCount) => preCount === 0);
       reset();  
-    }
-    
+    } 
   };
 
   return (
@@ -118,7 +90,7 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
       <TextInput
         inputProps={{
           onChange:(e) => {
-            setFirstNameInput(e.target.value); 
+            setFirstNameInput(capitalize(e.target.value)); 
           },
           name: "First name",
           value: firstNameInput,
@@ -132,7 +104,7 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
       <TextInput
         inputProps={{
           onChange:(e) => {
-            setLastNameInput(e.target.value);
+            setLastNameInput(capitalize(e.target.value));
           },
           name: "Last name",
           value: lastNameInput,
@@ -177,9 +149,10 @@ export const FunctionalForm = ( { firstName, lastName, email, city, phoneNumber 
       <PhoneInput
         phoneInputState={phoneInputState}
         setPhoneInputState={setPhoneInputState}
-        refs={refs}
-        createChangeHandler={createChangeHandler}
         phoneNumberErrorMessage={phoneNumberErrorMessage}
+        onChangeInputState={(newPhoneInputState) => {
+          setPhoneInputState(newPhoneInputState)
+        }}
         isPhoneBad={isPhoneBad}
       />
 

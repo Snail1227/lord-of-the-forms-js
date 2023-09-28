@@ -9,18 +9,8 @@ export const InfoRow = ({ label, value }) => {
   );
 };
 export const ProfileInformation = ({ userData }) => {
-
-  const { email, firstName, lastName, phone, city } = userData;
-
-  const info = 
-    email.length === 0 &&
-    firstName.length === 0 &&
-    lastName.length === 0 &&
-    phone.length === 0 &&
-    city.length === 0;
-
   
-  if (info) {
+  if (!userData) {
     return (
       <>
         <u>
@@ -32,7 +22,9 @@ export const ProfileInformation = ({ userData }) => {
       </>
     );
   } 
-  
+
+  const { email, firstName, lastName, phone, city } = userData;
+
   return (
     <>
       <u>

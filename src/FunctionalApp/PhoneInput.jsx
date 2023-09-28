@@ -1,12 +1,40 @@
 import { Fragment } from "react";
 import { ErrorMessage } from "../ErrorMessage";
+import { useRef } from "react";
 
 export function PhoneInput( { 
     phoneInputState,
-    isPhoneBad, 
-    refs, 
-    createChangeHandler,
+    onChangeInputState,
+    isPhoneBad,
     phoneNumberErrorMessage } ) {
+
+      const refs = [useRef(), useRef(), useRef(), useRef()];
+
+      const createChangeHandler = (index) => (e) => {
+        const length = [2, 2, 2, 1];
+        const currentMaxLength = length[index];
+        const nextRef = refs[index + 1];
+        const prevRef = refs[index - 1];
+        
+        const value = e.target.value.replace(/[^0-9]/g, '');
+    
+        const shouldGoToNextRef = currentMaxLength === value.length && nextRef !== undefined;
+        const shouldGoToPrevRef = value.length === 0 && prevRef !== undefined;
+    
+        if (shouldGoToNextRef && nextRef.current) {
+            nextRef.current.focus();
+        }
+        if (shouldGoToPrevRef && prevRef.current) {
+            prevRef.current.focus();
+        }
+    
+        const newState = phoneInputState.map((phoneInput, phoneInputIndex) => 
+            index === phoneInputIndex ? value.slice(0, currentMaxLength) : phoneInput
+        );
+        onChangeInputState(newState);
+    };
+
+
     return (
         <>
         <div className="input-wrap" >

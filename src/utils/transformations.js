@@ -3,5 +3,5 @@ export const capitalize = (name) => {
 }
 
 export const formatPhoneNumber = (phone) => {
-    return (phone.join('-'));
+    return phone.join('-');
 }
